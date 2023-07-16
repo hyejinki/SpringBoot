@@ -16,7 +16,7 @@ public class PostTranscribeSample {
         HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
         httpConn.setRequestMethod("POST");
         httpConn.setRequestProperty("accept", "application/json");
-        httpConn.setRequestProperty("Authorization", "Bearer "+ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODkzNDQzNDYsImlhdCI6MTY4OTMyMjc0NiwianRpIjoiRTZRZnNSemc3VmtWcFI4QzNMdlkiLCJwbGFuIjoiYmFzaWMiLCJzY29wZSI6InNwZWVjaCIsInN1YiI6IlpQdTNpNFNZaC1oazhXcDZPQ0xYIn0.2tQkMDLONurYcX1L-KWkf51UKu1poCBgLbQhs7nJR0c");
+        httpConn.setRequestProperty("Authorization", "Bearer "+ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk1MTI0MTEsImlhdCI6MTY4OTQ5MDgxMSwianRpIjoiN1FYZUdKZHM3R3JJMlVtcF93UUIiLCJwbGFuIjoiYmFzaWMiLCJzY29wZSI6InNwZWVjaCIsInN1YiI6IlpQdTNpNFNZaC1oazhXcDZPQ0xYIn0.mmH6d3p1XazMDcXSCQghqLILMvMqlvc5abqkHriW_mQ");
         httpConn.setRequestProperty("Content-Type", "multipart/form-data;boundary=authsample");
         httpConn.setDoOutput(true);
 
@@ -61,7 +61,7 @@ public class PostTranscribeSample {
         outputStream.flush();
         outputStream.close();
 
-        System.out.println(httpConn.getResponseCode());
+
         InputStream responseStream = httpConn.getResponseCode() / 100 == 2
                 ? httpConn.getInputStream()
                 : httpConn.getErrorStream();
@@ -70,27 +70,40 @@ public class PostTranscribeSample {
         Scanner s = new Scanner(responseStream).useDelimiter("\\A");
         String response = s.hasNext() ? s.next() : "";
         s.close();
-        System.out.println(response);
 
 
 
         JSONObject jsonResponse = new JSONObject(response);
         String id = jsonResponse.getString("id");
-        URL geturl = new URL("https://openapi.vito.ai/v1/transcribe/" + id);
-        HttpURLConnection httpGetConn = (HttpURLConnection) url.openConnection();
-        httpGetConn.setRequestMethod("POST");
-        httpGetConn.setRequestProperty("accept", "application/json");
-        httpGetConn.setRequestProperty("Authorization", "Bearer "+ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODkzNDQzNDYsImlhdCI6MTY4OTMyMjc0NiwianRpIjoiRTZRZnNSemc3VmtWcFI4QzNMdlkiLCJwbGFuIjoiYmFzaWMiLCJzY29wZSI6InNwZWVjaCIsInN1YiI6IlpQdTNpNFNZaC1oazhXcDZPQ0xYIn0.2tQkMDLONurYcX1L-KWkf51UKu1poCBgLbQhs7nJR0c");
+        boolean completed = false;
+        while (!completed) {
+            Thread.sleep(5000);
+            URL geturl = new URL("https://openapi.vito.ai/v1/transcribe/" + id);
+            HttpURLConnection httpGetConn = (HttpURLConnection) geturl.openConnection();
+            httpGetConn.setRequestMethod("GET");
+            httpGetConn.setRequestProperty("accept", "application/json");
+            httpGetConn.setRequestProperty("Authorization", "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk1MTI0MTEsImlhdCI6MTY4OTQ5MDgxMSwianRpIjoiN1FYZUdKZHM3R3JJMlVtcF93UUIiLCJwbGFuIjoiYmFzaWMiLCJzY29wZSI6InNwZWVjaCIsInN1YiI6IlpQdTNpNFNZaC1oazhXcDZPQ0xYIn0.mmH6d3p1XazMDcXSCQghqLILMvMqlvc5abqkHriW_mQ");
 
 
-        InputStream responseGetStream = httpConn.getResponseCode() / 100 == 2
-                ? httpConn.getInputStream()
-                : httpConn.getErrorStream();
-        Scanner g = new Scanner(responseGetStream).useDelimiter("\\A");
-        String result = g.hasNext() ? g.next() : "";
-        g.close();
-        System.out.println(result);
+            InputStream responseGetStream = httpGetConn.getResponseCode() / 100 == 2
+                    ? httpGetConn.getInputStream()
+                    : httpGetConn.getErrorStream();
+
+            Scanner g = new Scanner(responseGetStream).useDelimiter("\\A");
+            String result = g.hasNext() ? g.next() : "";
+            g.close();
+
+            JSONObject statusResult = new JSONObject(result);
+            String getStatus = statusResult.getString("status");
+            if (getStatus.equals("completed")) {
+                completed = true;
 
 
+
+            }
+
+            System.out.println(result);
+
+        }
     }
 }
