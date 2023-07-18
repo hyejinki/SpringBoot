@@ -8,7 +8,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Scanner;
+
+import com.fasterxml.jackson.core.JsonParser;
 import org.json.JSONObject;
+
+
+//import org.json.;
 
 public class PostTranscribeSample {
     public static void main(String[] args) throws Exception {
@@ -16,11 +21,11 @@ public class PostTranscribeSample {
         HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
         httpConn.setRequestMethod("POST");
         httpConn.setRequestProperty("accept", "application/json");
-        httpConn.setRequestProperty("Authorization", "Bearer "+ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2MDM3NDcsImlhdCI6MTY4OTU4MjE0NywianRpIjoiVmFfRWdhaXhHTkZZX3U1RHMzWWYiLCJwbGFuIjoiYmFzaWMiLCJzY29wZSI6InNwZWVjaCIsInN1YiI6IlpQdTNpNFNZaC1oazhXcDZPQ0xYIn0.9YGLtXOXAXIyFwk326KPWsZ73NRhXyhnspczyl8C9ZM");
+        httpConn.setRequestProperty("Authorization", "Bearer "+ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2NjU2NDcsImlhdCI6MTY4OTY0NDA0NywianRpIjoiaEVGVklRYWd2cW9RN2FBY2xHZG0iLCJwbGFuIjoiYmFzaWMiLCJzY29wZSI6InNwZWVjaCIsInN1YiI6IlpQdTNpNFNZaC1oazhXcDZPQ0xYIn0.Udtr0m1l-fDsYne4E_QH6ZbZEmmrM3qSlucaqK_C-ps");
         httpConn.setRequestProperty("Content-Type", "multipart/form-data;boundary=authsample");
         httpConn.setDoOutput(true);
 
-        File file = new File("src/main/resources/static/consulting.m4a");
+        File file = new File("src/main/resources/static/sample2.m4a");
 
         DataOutputStream outputStream;
         outputStream = new DataOutputStream(httpConn.getOutputStream());
@@ -71,7 +76,6 @@ public class PostTranscribeSample {
         String response = s.hasNext() ? s.next() : "";
         s.close();
 
-        System.out.println(response);
 
         JSONObject jsonResponse = new JSONObject(response);
         String id = jsonResponse.getString("id");
@@ -82,7 +86,7 @@ public class PostTranscribeSample {
             HttpURLConnection httpGetConn = (HttpURLConnection) geturl.openConnection();
             httpGetConn.setRequestMethod("GET");
             httpGetConn.setRequestProperty("accept", "application/json");
-            httpGetConn.setRequestProperty("Authorization", "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2MDM3NDcsImlhdCI6MTY4OTU4MjE0NywianRpIjoiVmFfRWdhaXhHTkZZX3U1RHMzWWYiLCJwbGFuIjoiYmFzaWMiLCJzY29wZSI6InNwZWVjaCIsInN1YiI6IlpQdTNpNFNZaC1oazhXcDZPQ0xYIn0.9YGLtXOXAXIyFwk326KPWsZ73NRhXyhnspczyl8C9ZM");
+            httpGetConn.setRequestProperty("Authorization", "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2NjU2NDcsImlhdCI6MTY4OTY0NDA0NywianRpIjoiaEVGVklRYWd2cW9RN2FBY2xHZG0iLCJwbGFuIjoiYmFzaWMiLCJzY29wZSI6InNwZWVjaCIsInN1YiI6IlpQdTNpNFNZaC1oazhXcDZPQ0xYIn0.Udtr0m1l-fDsYne4E_QH6ZbZEmmrM3qSlucaqK_C-ps");
 
 
             InputStream responseGetStream = httpGetConn.getResponseCode() / 100 == 2
@@ -94,10 +98,18 @@ public class PostTranscribeSample {
             g.close();
 
             JSONObject statusResult = new JSONObject(result);
+
             String getStatus = statusResult.getString("status");
             if (getStatus.equals("completed")) {
                 completed = true;
-                System.out.println(result);
+                System.out.println(statusResult);
+//
+//                msg_list = [utterance["msg"] for utterance in parsed_data["results"]["utterances"]]
+//                result_msg = "\n".join(msg_list)
+
+
+                System.out.println(statusResult);
+
 
 
 
