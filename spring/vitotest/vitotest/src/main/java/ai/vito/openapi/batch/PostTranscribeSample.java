@@ -8,20 +8,24 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Scanner;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.fasterxml.jackson.core.JsonParser;
 import org.json.JSONObject;
+import org.json.JSONArray;
 
-
-//import org.json.;
 
 public class PostTranscribeSample {
+    @Value("${vito-key}")
+    private String vito_key;
+
     public static void main(String[] args) throws Exception {
+
         URL url = new URL("https://openapi.vito.ai/v1/transcribe");
         HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
         httpConn.setRequestMethod("POST");
         httpConn.setRequestProperty("accept", "application/json");
-        httpConn.setRequestProperty("Authorization", "Bearer "+ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2NjU2NDcsImlhdCI6MTY4OTY0NDA0NywianRpIjoiaEVGVklRYWd2cW9RN2FBY2xHZG0iLCJwbGFuIjoiYmFzaWMiLCJzY29wZSI6InNwZWVjaCIsInN1YiI6IlpQdTNpNFNZaC1oazhXcDZPQ0xYIn0.Udtr0m1l-fDsYne4E_QH6ZbZEmmrM3qSlucaqK_C-ps");
+        httpConn.setRequestProperty("Authorization", "Bearer "+ vito_key);
         httpConn.setRequestProperty("Content-Type", "multipart/form-data;boundary=authsample");
         httpConn.setDoOutput(true);
 
@@ -86,7 +90,7 @@ public class PostTranscribeSample {
             HttpURLConnection httpGetConn = (HttpURLConnection) geturl.openConnection();
             httpGetConn.setRequestMethod("GET");
             httpGetConn.setRequestProperty("accept", "application/json");
-            httpGetConn.setRequestProperty("Authorization", "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2NjU2NDcsImlhdCI6MTY4OTY0NDA0NywianRpIjoiaEVGVklRYWd2cW9RN2FBY2xHZG0iLCJwbGFuIjoiYmFzaWMiLCJzY29wZSI6InNwZWVjaCIsInN1YiI6IlpQdTNpNFNZaC1oazhXcDZPQ0xYIn0.Udtr0m1l-fDsYne4E_QH6ZbZEmmrM3qSlucaqK_C-ps");
+            httpGetConn.setRequestProperty("Authorization", "Bearer " + vito_key);
 
 
             InputStream responseGetStream = httpGetConn.getResponseCode() / 100 == 2
@@ -102,21 +106,21 @@ public class PostTranscribeSample {
             String getStatus = statusResult.getString("status");
             if (getStatus.equals("completed")) {
                 completed = true;
-                System.out.println(statusResult);
-//
-//                msg_list = [utterance["msg"] for utterance in parsed_data["results"]["utterances"]]
-//                result_msg = "\n".join(msg_list)
+                JSONArray utterance = statusResult.getJSONObject("results").getJSONArray("utterances");
+                StringBuilder resultMsgBuilder = new StringBuilder();
+                for (int i = 0; i < utterance.length(); i++) {
+                    JSONObject utteranceArray = utterance.getJSONObject(i);
+                    String msg = utteranceArray.getString("msg");
+                    resultMsgBuilder.append(msg);
+                }
+                String resultMsg = resultMsgBuilder.toString();
 
-
-                System.out.println(statusResult);
-
-
+                // Print the concatenated messages
+                System.out.println(resultMsg);
+                System.out.println(resultMsg.getClass().getSimpleName());
 
 
             }
-
-
-
         }
     }
 }
