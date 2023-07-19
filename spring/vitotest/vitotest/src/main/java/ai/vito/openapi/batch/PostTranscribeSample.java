@@ -16,8 +16,6 @@ import org.json.JSONArray;
 
 
 public class PostTranscribeSample {
-    @Value("${vito-key}")
-    private String vito_key;
 
     public static void main(String[] args) throws Exception {
 
