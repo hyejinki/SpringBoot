@@ -22,6 +22,4 @@ public class ChatGPTResponse {
         private int index;
         private Message message;
     }
-
-
 }
