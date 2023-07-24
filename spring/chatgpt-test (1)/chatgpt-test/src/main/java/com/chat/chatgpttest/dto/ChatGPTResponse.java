@@ -3,6 +3,7 @@ package com.chat.chatgpttest.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.json.JSONObject;
 
 import java.awt.*;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ChatGPTResponse {
 
-    private List<Choice> choices;
+    private JSONObject choices;
 
     @Data
     @AllArgsConstructor

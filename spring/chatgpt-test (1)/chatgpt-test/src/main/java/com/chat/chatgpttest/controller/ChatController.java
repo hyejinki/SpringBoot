@@ -26,18 +26,14 @@ public class ChatController {
     private RestTemplate template;
 
     @GetMapping("/chat")
-    public JSONObject chat(){
+    public JSONObject chatResponse(){
         ChatGPTRequest request = new ChatGPTRequest(model);
         ChatGPTResponse ChatGPTResponse= template.postForObject(apiURL, request, ChatGPTResponse.class);
+        JSONObject msg = new JSONObject(ChatGPTResponse);
+        return msg;
 
-        JSONObject jsonResponse = new JSONObject(ChatGPTResponse);
 
-        JSONArray msg = jsonResponse.getJSONArray("choices");
-//        System.out.println(msg.getJSONObject(0));
-        JSONArray content = msg.getJSONObject(0).getJSONObject("message").getJSONArray("content");
 
-        System.out.println(content);
-        return jsonResponse;
 //        return ChatGPTResponse.getChoices().get(0).getMessage().getContent();
 //    public String chat(@RequestParam("prompt") String prompt){
 //        ChatGPTRequest request=new ChatGPTRequest(model, prompt);

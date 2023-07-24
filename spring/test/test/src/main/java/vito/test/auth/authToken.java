@@ -1,15 +1,21 @@
 package vito.test.auth;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import lombok.Data;
+
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 public class authToken {
-    private static final String CLIENT_ID = "<YOUR_CLIENT_ID>";
-    private static final String CLIENT_SECRET = "<YOUR_CLIENT_SECRET>";
+    private static final String CLIENT_ID = "ZPu3i4SYh-hk8Wp6OCLX";
+    private static final String CLIENT_SECRET = "fity_uwrcNTJJ2TQUsJItQZHp2HlDnTBUIQ5I_QA";
 
     public static String generateToken() throws IOException {
         URL url = new URL("https://openapi.vito.ai/v1/authenticate");
@@ -32,7 +38,20 @@ public class authToken {
         Scanner s = new Scanner(responseStream).useDelimiter("\\A");
         String response = s.hasNext() ? s.next() : "";
         s.close();
-        return response;
+        System.out.println(response.getClass().getName());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(response);
+        String AccessToken = jsonNode.get("access_token").asText();
+
+//        System.out.println("Acees Token: " + AccessToken);
+
+
+        return AccessToken;
+
+
+
+
     }
 }
 
