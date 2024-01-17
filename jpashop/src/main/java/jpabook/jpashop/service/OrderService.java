@@ -32,7 +32,7 @@ public class OrderService {
 
         //배송정보 생성
         Delivery delivery = new Delivery();
-        delivery.setAdress(member.getAdress());
+        delivery.setAdress(member.getAddress());
         delivery.setStatus(DeliveryStatus.READY);
 
         //주문 상품 생성
