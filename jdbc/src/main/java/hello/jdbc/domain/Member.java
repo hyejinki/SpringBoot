@@ -7,7 +7,7 @@ public class Member {
     private String memberId;
     private int money;
 
-    private Member(){
+    public Member(){
 
     }
     public Member(String memberId, int money) {
