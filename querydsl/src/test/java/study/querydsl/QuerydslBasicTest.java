@@ -121,4 +121,17 @@ public class QuerydslBasicTest {
 
     }
 
+    @Test
+    public void paging1() {
+        List<Member> result = queryFactory
+                .selectFrom(member)
+                .orderBy(member.username.desc())
+                .offset(1)
+                .limit(2) //최대 2건
+                .fetch();
+
+        assertThat(result.get(0).getUsername()).isEqualTo("member3");
+        assertThat(result.get(1).getUsername()).isEqualTo("member2");
+    }
+
 }
