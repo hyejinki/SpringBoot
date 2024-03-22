@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 import study.querydsl.entity.Member;
 import study.querydsl.entity.QMember;
@@ -24,8 +25,12 @@ public class QuerydslBasicTest {
     @Autowired
     EntityManager em;
 
+    JPAQueryFactory queryFactory;
+
     @BeforeEach
     public void before() {
+        queryFactory = new JPAQueryFactory(em);
+
         Team teamA = new Team("teamA");
         Team teamB = new Team("teamB");
 
@@ -60,8 +65,6 @@ public class QuerydslBasicTest {
     @Test
     public void startQuerydsl() {
         //member1을 찾아라
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-
         Member findMember = queryFactory
                 .select(member)
                 .from(member)
@@ -71,5 +74,29 @@ public class QuerydslBasicTest {
         assertThat(findMember.getUsername()).isEqualTo("member1");
     }
 
+    @Test
+    public void search() {
+        Member old = queryFactory
+                .select(member)
+                .from(member)
+                .where(
+                        member.age.eq(40)
+                )
+                .fetchOne();
+
+        assertThat(old.getAge()).isEqualTo(40);
+    }
+
+    @Test
+    public void searchAndParam() {
+        List<Member> members = queryFactory
+                .selectFrom(member)
+                .where(
+                        member.team.name.eq("teamA"),
+                        member.age.loe(20)
+                )
+                .fetch();
+        assertThat(members.size()).isEqualTo(2);
+    }
 
 }
